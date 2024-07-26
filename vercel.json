@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:match*",
+      "destination": "https://error418-neteasemusicapi.hf.space/:match*"
+    }
+  ]
+}
