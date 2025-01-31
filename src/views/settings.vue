@@ -70,7 +70,24 @@
           </select>
         </div>
       </div>
-
+      <h3>字体</h3>
+      <div class="item">
+        <div class="left">
+          <div class="title"> {{ $t('settings.webFont.text') }} </div>
+        </div>
+        <div class="right">
+          <select v-model="fontFamilyName">
+            <option
+              v-for="font in fonts"
+              :key="font.name"
+              :label="font.name"
+              :value="font.name"
+            >
+              <span :style="{ fontFamily: font.import }">{{ font.name }}</span>
+            </option>
+          </select>
+        </div>
+      </div>
       <h3>音质</h3>
       <div class="item">
         <div class="left">
@@ -709,6 +726,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import { mapState, mapActions } from 'vuex';
 import { isLooseLoggedIn, doLogout } from '@/utils/auth';
 import { auth as lastfmAuth } from '@/api/lastfm';
@@ -747,6 +765,9 @@ export default {
   },
   computed: {
     ...mapState(['player', 'settings', 'data', 'lastfm']),
+    fonts() {
+      return this.$store.state.fonts;
+    },
     isElectron() {
       return process.env.IS_ELECTRON;
     },
@@ -839,6 +860,17 @@ export default {
           value,
         });
         changeAppearance(value);
+      },
+    },
+    fontFamilyName: {
+      get() {
+        return this.settings.fontFamilyName ?? '思源黑体中文';
+      },
+      set(value) {
+        if (value === this.settings.fontFamilyName) return;
+        localStorage.setItem('fontFamilyName', value);
+        this.$store.commit('changefontFamilyName', value);
+        this.clearCache();
       },
     },
     musicQuality: {
